@@ -38,6 +38,17 @@ const pick = (obj, ...paths) => {
 
 const fmtDate = (d, opts) => new Intl.DateTimeFormat("en-GB", { timeZone: TZ, ...opts }).format(d);
 
+// en-GB renders September as "Sept", which breaks the three-letter column.
+// Build the "2 Sep" form from numeric parts instead.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dayMon = (d) => {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: TZ, day: "numeric", month: "numeric" })
+    .formatToParts(d);
+  const day = parts.find((p) => p.type === "day").value;
+  const mon = Number(parts.find((p) => p.type === "month").value);
+  return `${day} ${MONTHS[mon - 1]}`;
+};
+
 // ---------------------------------------------------------------- launches
 
 function renderLaunches(json) {
@@ -60,14 +71,20 @@ function renderLaunches(json) {
     if (net) {
       const d = new Date(net);
       if (!isNaN(d)) {
-        firm = /^(min|hr|day)/i.test(precision) || precision === "";
-        when = fmtDate(d, { day: "numeric", month: "short" });
+        // SEC, MIN and HR all mean the window is pinned to a real clock time.
+        // DAY and coarser mean the date itself is still provisional.
+        firm = precision === "" || /^(sec|min|hr|hour)/i.test(precision);
+        when = dayMon(d);
         if (firm) time = fmtDate(d, { hour: "2-digit", minute: "2-digit", hour12: false }) + " PT";
-        else when = (precision ? precision.toUpperCase() + " " : "NET ") + when;
+        else when = "NET " + when;
       }
     }
 
-    const site = [padName, locName].filter(Boolean).join(" &middot; ");
+    // The API says "Unknown Pad" when it has a location but no pad. Drop it
+    // rather than printing the word Unknown on the board.
+    const site = [padName, locName]
+      .filter((s) => s && !/^unknown/i.test(s))
+      .join(" &middot; ");
     const isVberg = /vandenberg/i.test(locName) || /vandenberg/i.test(padName);
     // Polar launches out of SLC-4E are genuinely visible from San Diego, but
     // only in the dark. Anything from ~19:00 to ~06:00 local qualifies.
@@ -191,7 +208,7 @@ try {
   fail(e.message);
 }
 
-const stampDate = fmtDate(new Date(), { day: "numeric", month: "short", year: "numeric" });
+const stampDate = `${dayMon(new Date())} ${fmtDate(new Date(), { year: "numeric" })}`;
 const stampTime = fmtDate(new Date(), { hour: "2-digit", minute: "2-digit", hour12: false });
 
 const replacements = {
