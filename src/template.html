@@ -135,10 +135,10 @@
   .rail-card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:18px 0 0;box-shadow:var(--shadow);}
   .rail-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 20px 16px;flex-wrap:wrap;}
   .rail-scroll{overflow-x:auto;padding:0 20px 22px;}
-  .rail{position:relative;min-width:1560px;height:200px;}
+  .rail{position:relative;min-width:2200px;height:300px;}
   .rail-line{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--rule);}
   .rail-elapsed{position:absolute;left:0;top:30px;height:2px;background:var(--steady);}
-  .node{position:absolute;top:0;transform:translateX(-50%);width:96px;text-align:center;}
+  .node{position:absolute;top:0;transform:translateX(-50%);width:104px;text-align:center;}
   .node .dot{
     width:11px;height:11px;border-radius:50%;margin:25px auto 0;
     background:var(--surface);border:2px solid var(--rule);position:relative;z-index:3;
@@ -351,8 +351,8 @@
       <div class="feed">
         <span class="chip gap">Unverified</span>
         <div class="body">
-          <div class="name">Welcome Week &amp; MUS 2 exam</div>
-          <div class="desc">You told me the MUS 2 proficiency exam sits in Welcome Week, but no published date confirms it yet. Not on the rail until it does.</div>
+          <div class="name">MUS 2 proficiency exam</div>
+          <div class="desc">Orientation dates are on the rail now, from you. The MUS 2 exam still has no date attached, so it stays off until it does.</div>
         </div>
       </div>
       <div class="feed">
@@ -385,9 +385,12 @@
   // Fall 2026 milestones. Offsets: PDT (-07:00) through 31 Oct, PST (-08:00) from 1 Nov.
   var MILESTONES = [
     {t:"2026-08-19T00:00:00-07:00", short:"19 Aug", name:"Course registration opened"},
+    {t:"2026-09-02T16:30:00-07:00", short:"2 Sep", name:"Potluck, Garry Point"},
+    {t:"2026-09-13T00:00:00-07:00", short:"13 Sep", name:"Leave for UCSD"},
     {t:"2026-09-16T08:00:00-07:00", short:"16 Sep", name:"General move-in opens"},
     {t:"2026-09-19T00:00:00-07:00", short:"19 Sep", name:"Housing contract begins"},
-    {t:"2026-09-21T00:00:00-07:00", short:"21 Sep", name:"Fall Quarter begins"},
+    {t:"2026-09-21T09:00:00-07:00", short:"21 Sep", name:"Quarter begins \u00b7 Orientation"},
+    {t:"2026-09-23T09:00:00-07:00", short:"23 Sep", name:"MAE orientation, WLH"},
     {t:"2026-09-24T08:00:00-07:00", short:"24 Sep", name:"Instruction begins"},
     {t:"2026-10-14T00:00:00-07:00", short:"14 Oct", name:"15th day of instruction"},
     {t:"2026-11-11T00:00:00-08:00", short:"11 Nov", name:"Veterans Day, no class"},
@@ -426,9 +429,9 @@
     el.className = "node";
     // keep the outermost labels inside the rail's bounds
     el.style.left = Math.min(96.5, Math.max(3.5, pct)) + "%";
-    // three label tiers, so tightly-clustered September dates never overprint
-    var tier = i % 3;
-    var labelTop = 48 + tier * 50;
+    // four label tiers, so the tight mid-September run never overprints
+    var tier = i % 4;
+    var labelTop = 48 + tier * 58;
     el.innerHTML = '<div class="dot"></div>' +
                    '<div class="stem" style="height:' + (labelTop - 40) + 'px"></div>' +
                    '<div class="label" style="top:' + labelTop + 'px">' +
