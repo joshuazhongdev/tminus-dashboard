@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#EDEFF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0F16" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Countdown through the UCSD Fall 2026 sequence, with launch manifest and La Jolla conditions.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128640;</text></svg>">
+<style>html,body{min-height:100%}</style>
+<title>T-Minus San Diego</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#EDEFF2;
+    --surface:#FFFFFF;
+    --surface-2:#F4F6F9;
+    --ink:#10161F;
+    --ink-soft:#5A6675;
+    --ink-faint:#8C97A5;
+    --rule:#D2D8DF;
+    --rule-soft:#E3E8ED;
+    --accent:#D9481A;
+    --accent-ink:#B03A13;
+    --accent-wash:#FAEAE3;
+    --steady:#15625B;
+    --steady-wash:#E1EFEC;
+    --shadow:0 1px 2px rgba(16,22,31,.05), 0 12px 28px -20px rgba(16,22,31,.35);
+    --board-ground:#131A24;
+    --board-ink:#F2F5F8;
+    --board-soft:#7E8B9B;
+    --board-rule:#28323F;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0A0F16;
+      --surface:#121924;
+      --surface-2:#18212D;
+      --ink:#E9EDF2;
+      --ink-soft:#94A0AF;
+      --ink-faint:#6B7889;
+      --rule:#25303D;
+      --rule-soft:#1D2733;
+      --accent:#FF6B36;
+      --accent-ink:#FF8A5E;
+      --accent-wash:#2B1710;
+      --steady:#43BCA9;
+      --steady-wash:#0F2622;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 28px -20px rgba(0,0,0,.8);
+      --board-ground:#161E29;
+      --board-ink:#F2F5F8;
+      --board-soft:#8391A2;
+      --board-rule:#2B3745;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0A0F16;
+    --surface:#121924;
+    --surface-2:#18212D;
+    --ink:#E9EDF2;
+    --ink-soft:#94A0AF;
+    --ink-faint:#6B7889;
+    --rule:#25303D;
+    --rule-soft:#1D2733;
+    --accent:#FF6B36;
+    --accent-ink:#FF8A5E;
+    --accent-wash:#2B1710;
+    --steady:#43BCA9;
+    --steady-wash:#0F2622;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 28px -20px rgba(0,0,0,.8);
+    --board-ground:#161E29;
+    --board-ink:#F2F5F8;
+    --board-soft:#8391A2;
+    --board-rule:#2B3745;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Public Sans","Helvetica Neue",Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 22px 56px;display:flex;flex-direction:column;gap:22px;}
+
+  .eyebrow{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;
+    font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;}
+
+  /* ---------- masthead ---------- */
+  .masthead{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;}
+  .masthead h1{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;
+    font-weight:700;font-size:34px;line-height:1;letter-spacing:.005em;
+    margin:0;text-wrap:balance;
+  }
+  .masthead p{margin:5px 0 0;color:var(--ink-soft);font-size:14px;max-width:52ch;}
+  .stamp{text-align:right;font-size:11.5px;color:var(--ink-faint);line-height:1.7;}
+  .stamp b{display:block;color:var(--ink-soft);font-weight:500;}
+
+  /* ---------- countdown board ---------- */
+  .board{
+    background:var(--board-ground);color:var(--board-ink);
+    border-radius:3px;padding:26px 26px 22px;
+    display:flex;flex-wrap:wrap;gap:26px;align-items:flex-end;justify-content:space-between;
+  }
+  .board .target{min-width:230px;}
+  .board .eyebrow{color:var(--board-soft);}
+  .board .target h2{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;
+    font-weight:700;font-size:27px;line-height:1.1;margin:7px 0 0;text-wrap:balance;
+  }
+  .board .target .when{color:var(--board-soft);font-size:13px;margin-top:6px;}
+  .clock{display:flex;gap:4px;align-items:flex-end;}
+  .unit{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:60px;}
+  .unit .val{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;
+    font-variant-numeric:tabular-nums;
+    font-weight:700;font-size:60px;line-height:.86;letter-spacing:.01em;
+  }
+  .unit:first-child .val{color:var(--accent-ink);}
+  .unit .tag{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--board-soft);}
+  .colon{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;
+    font-weight:700;font-size:48px;line-height:1;color:var(--board-rule);padding-bottom:22px;
+  }
+
+  /* ---------- timeline rail ---------- */
+  .rail-card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:18px 0 0;box-shadow:var(--shadow);}
+  .rail-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 20px 16px;flex-wrap:wrap;}
+  .rail-scroll{overflow-x:auto;padding:0 20px 22px;}
+  .rail{position:relative;min-width:1560px;height:200px;}
+  .rail-line{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--rule);}
+  .rail-elapsed{position:absolute;left:0;top:30px;height:2px;background:var(--steady);}
+  .node{position:absolute;top:0;transform:translateX(-50%);width:96px;text-align:center;}
+  .node .dot{
+    width:11px;height:11px;border-radius:50%;margin:25px auto 0;
+    background:var(--surface);border:2px solid var(--rule);position:relative;z-index:3;
+  }
+  .node.done .dot{background:var(--steady);border-color:var(--steady);}
+  .node.next .dot{background:var(--accent);border-color:var(--accent);width:15px;height:15px;margin-top:23px;box-shadow:0 0 0 4px var(--accent-wash);}
+  .node .stem{position:absolute;left:50%;top:40px;width:1px;background:var(--rule);transform:translateX(-50%);z-index:1;}
+  .node.done .stem{background:var(--rule-soft);}
+  .node.next .stem{background:var(--accent);}
+  .node .label{position:absolute;left:0;right:0;}
+  .node .date{font-size:11px;color:var(--ink-faint);letter-spacing:.02em;}
+  .node .name{font-size:11.5px;line-height:1.35;color:var(--ink-soft);margin-top:2px;text-wrap:balance;}
+  .node.next .date{color:var(--accent-ink);font-weight:500;}
+  .node.next .name{color:var(--ink);font-weight:600;}
+  .node.done .name{color:var(--ink-faint);}
+  .now-marker{position:absolute;top:19px;height:19px;width:1px;background:var(--accent);transform:translateX(-50%);z-index:2;}
+  .now-marker span{
+    position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);white-space:nowrap;
+  }
+
+  /* ---------- two-column ---------- */
+  .cols{display:grid;grid-template-columns:1.55fr 1fr;gap:22px;align-items:start;}
+  @media (max-width:840px){ .cols{grid-template-columns:1fr;} }
+
+  .panel{background:var(--surface);border:1px solid var(--rule);border-radius:3px;box-shadow:var(--shadow);overflow:hidden;}
+  .panel-head{padding:16px 20px 14px;border-bottom:1px solid var(--rule-soft);display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+  .panel-head h3{font-family:"Saira Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;margin:0;text-transform:uppercase;}
+  .panel-head .src{font-size:11px;color:var(--ink-faint);}
+
+  /* launch table */
+  .tbl-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{
+    font-family:"Saira Condensed","Arial Narrow",sans-serif;font-weight:500;font-size:11px;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);
+    text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule-soft);white-space:nowrap;
+  }
+  td{padding:11px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.when{white-space:nowrap;color:var(--ink);font-size:12.5px;}
+  td.when small{display:block;color:var(--ink-faint);font-size:11px;margin-top:2px;}
+  td.veh{white-space:nowrap;color:var(--ink-soft);}
+  td.mission{color:var(--ink);font-weight:500;}
+  td.mission small{display:block;font-weight:400;color:var(--ink-faint);font-size:11.5px;margin-top:2px;}
+  tr.vberg{background:var(--accent-wash);}
+  tr.vberg td.mission{color:var(--accent-ink);}
+  tr.tbd td{color:var(--ink-faint);}
+  tr.tbd td.mission{color:var(--ink-soft);font-weight:400;}
+
+  .visible-note{
+    display:inline-block;margin-top:4px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:600;
+  }
+
+  /* weather */
+  .wx-now{padding:18px 20px;border-bottom:1px solid var(--rule-soft);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .wx-now .deg{font-family:"Saira Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:52px;line-height:.9;font-variant-numeric:tabular-nums;}
+  .wx-now .cond{color:var(--ink-soft);font-size:13.5px;line-height:1.45;}
+  .wx-now .cond b{display:block;color:var(--ink);font-weight:600;font-size:14.5px;}
+  .wx-days{display:grid;grid-template-columns:repeat(4,1fr);}
+  .wx-day{padding:14px 8px;text-align:center;border-right:1px solid var(--rule-soft);}
+  .wx-day:last-child{border-right:none;}
+  .wx-day .d{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);}
+  .wx-day .hi{font-size:20px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums;}
+  .wx-day .lo{font-size:12px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .wx-day .sky{font-size:10.5px;color:var(--ink-soft);margin-top:5px;line-height:1.3;}
+  .wx-foot{padding:12px 20px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--rule-soft);background:var(--surface-2);}
+
+  /* chips */
+  .chip{
+    display:inline-block;font-size:10px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;
+    padding:3px 7px;border-radius:2px;white-space:nowrap;
+  }
+  .chip.live{background:var(--steady-wash);color:var(--steady);}
+  .chip.gap{background:var(--accent-wash);color:var(--accent-ink);}
+  .chip.off{background:var(--surface-2);color:var(--ink-faint);border:1px solid var(--rule-soft);}
+
+  /* feeds */
+  .feeds{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:18px 20px 8px;box-shadow:var(--shadow);}
+  .feeds h3{font-family:"Saira Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;margin:0 0 4px;text-transform:uppercase;}
+  .feeds > p{margin:0 0 14px;color:var(--ink-soft);font-size:13.5px;max-width:74ch;}
+  .feed-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 28px;}
+  .feed{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--rule-soft);}
+  .feed .body{flex:1;min-width:0;}
+  .feed .name{font-weight:600;font-size:13.5px;}
+  .feed .desc{font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;}
+
+  .footnote{font-size:12px;color:var(--ink-faint);line-height:1.65;max-width:80ch;}
+  .footnote a{color:var(--ink-soft);}
+
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important;} }
+  @media (max-width:560px){
+    .unit .val{font-size:44px;}
+    .unit{min-width:46px;}
+    .masthead h1{font-size:28px;}
+    .wx-days{grid-template-columns:repeat(2,1fr);}
+    .wx-day:nth-child(2){border-right:none;}
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Personal ops board &middot; Josh</div>
+      <h1>T-Minus San Diego</h1>
+      <p>Two things worth tracking right now: the sequence that puts you on campus at Revelle, and what is flying while you get there.</p>
+    </div>
+    <div class="stamp mono"><!--STAMP--></div>
+  </header>
+
+  <section class="board" aria-label="Countdown to next milestone">
+    <div class="target">
+      <div class="eyebrow">Counting to</div>
+      <h2 id="target-name">&nbsp;</h2>
+      <div class="when mono" id="target-when">&nbsp;</div>
+    </div>
+    <div class="clock" id="clock">
+      <div class="unit"><div class="val mono" id="c-d">--</div><div class="tag">Days</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="val mono" id="c-h">--</div><div class="tag">Hrs</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="val mono" id="c-m">--</div><div class="tag">Min</div></div>
+      <div class="colon">:</div>
+      <div class="unit"><div class="val mono" id="c-s">--</div><div class="tag">Sec</div></div>
+    </div>
+  </section>
+
+  <section class="rail-card" aria-label="Fall Quarter 2026 sequence">
+    <div class="rail-head">
+      <div>
+        <div class="eyebrow">Fall Quarter 2026 sequence</div>
+        <div style="font-size:13px;color:var(--ink-soft);margin-top:3px;">Spaced by real elapsed time, 19 Aug &rarr; 12 Dec. The marker tracks today.</div>
+      </div>
+      <div class="eyebrow" style="color:var(--ink-faint);">UC San Diego &amp; HDH calendars</div>
+    </div>
+    <div class="rail-scroll">
+      <div class="rail" id="rail"></div>
+    </div>
+  </section>
+
+  <div class="cols">
+
+    <section class="panel" aria-label="Upcoming launches">
+      <div class="panel-head">
+        <h3>Launch manifest</h3>
+        <span class="src"><!--SRC_LAUNCH--></span>
+      </div>
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr><th>Window</th><th>Vehicle</th><th>Mission &amp; pad</th></tr>
+          </thead>
+          <tbody>
+<!--LAUNCH_ROWS-->
+</tbody>
+        </table>
+      </div>
+      <div class="wx-foot"><!--LAUNCH_FOOT--></div>
+    </section>
+
+    <section class="panel" aria-label="San Diego conditions">
+      <div class="panel-head">
+        <h3>La Jolla conditions</h3>
+        <span class="src"><!--SRC_WX--></span>
+      </div>
+      <div class="wx-now"><!--WX_NOW-->
+      </div>
+      <div class="wx-days"><!--WX_DAYS--></div>
+      <div class="wx-foot"><!--WX_FOOT--></div>
+    </section>
+
+  </div>
+
+  <section class="feeds">
+    <h3>Feed status</h3>
+    <p>What is actually behind each number on this board, and what is still dark. Nothing here is invented &mdash; where I could not reach a source, the slot says so rather than showing a plausible-looking figure.</p>
+    <div class="feed-list">
+      <div class="feed">
+        <span class="chip live">Live</span>
+        <div class="body">
+          <div class="name">Countdown &amp; sequence position</div>
+          <div class="desc">Computed in your browser every second from the dated milestones. Rolls to the next target on its own.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip live">Verified</span>
+        <div class="body">
+          <div class="name">UCSD &amp; HDH calendar dates</div>
+          <div class="desc">Pulled from the Blink academic calendar and the HDH move-in page.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip live">Verified</span>
+        <div class="body">
+          <div class="name">Launch manifest &amp; weather</div>
+          <div class="desc">Spaceflight Now and NWS San Diego, fetched 2 Sep. Refreshed on republish, not in-page.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip gap">Unverified</span>
+        <div class="body">
+          <div class="name">Add / drop / W deadlines</div>
+          <div class="desc">Deliberately blank. The enrollment calendar refused the fetch, and guessing week-2 and week-4 dates is the kind of error that costs a grade. TritonLink has them.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip gap">Unverified</span>
+        <div class="body">
+          <div class="name">Welcome Week &amp; MUS 2 exam</div>
+          <div class="desc">You told me the MUS 2 proficiency exam sits in Welcome Week, but no published date confirms it yet. Not on the rail until it does.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip off">Not connected</span>
+        <div class="body">
+          <div class="name">Calendar &amp; inbox</div>
+          <div class="desc">No calendar or mail connector on this account, so there is no real personal schedule here &mdash; only published institutional dates.</div>
+        </div>
+      </div>
+      <div class="feed">
+        <span class="chip off">Off in chat</span>
+        <div class="body">
+          <div class="name">Google Drive</div>
+          <div class="desc">Installed but switched off for this session. Enabling it would let this board track your MAE plan documents.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footnote">
+    Sources: <a href="https://blink.ucsd.edu/instructors/resources/academic/calendars/2026.html">UC San Diego Academic &amp; Administrative Calendar 2026&ndash;27</a> &middot; <a href="https://hdhughousing.ucsd.edu/living-on-campus/move-in/index.html">HDH Undergraduate Move-In</a> &middot; <a href="https://spaceflightnow.com/launch-schedule/">Spaceflight Now Launch Schedule</a> &middot; <a href="https://forecast.weather.gov/MapClick.php?lat=32.8801&amp;lon=-117.2340">NWS San Diego</a>
+  </p>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Fall 2026 milestones. Offsets: PDT (-07:00) through 31 Oct, PST (-08:00) from 1 Nov.
+  var MILESTONES = [
+    {t:"2026-08-19T00:00:00-07:00", short:"19 Aug", name:"Course registration opened"},
+    {t:"2026-09-16T08:00:00-07:00", short:"16 Sep", name:"General move-in opens"},
+    {t:"2026-09-19T00:00:00-07:00", short:"19 Sep", name:"Housing contract begins"},
+    {t:"2026-09-21T00:00:00-07:00", short:"21 Sep", name:"Fall Quarter begins"},
+    {t:"2026-09-24T08:00:00-07:00", short:"24 Sep", name:"Instruction begins"},
+    {t:"2026-10-14T00:00:00-07:00", short:"14 Oct", name:"15th day of instruction"},
+    {t:"2026-11-11T00:00:00-08:00", short:"11 Nov", name:"Veterans Day, no class"},
+    {t:"2026-11-26T00:00:00-08:00", short:"26 Nov", name:"Thanksgiving holiday"},
+    {t:"2026-12-04T00:00:00-08:00", short:"4 Dec", name:"Instruction ends"},
+    {t:"2026-12-05T00:00:00-08:00", short:"5 Dec", name:"Final exams begin"},
+    {t:"2026-12-12T00:00:00-08:00", short:"12 Dec", name:"Fall Quarter ends"}
+  ];
+
+  var ms = MILESTONES.map(function(m){
+    var o = {name:m.name, short:m.short};
+    o.ms = new Date(m.t).getTime();
+    return o;
+  });
+
+  var START = ms[0].ms;
+  var END = ms[ms.length-1].ms;
+  var SPAN = END - START;
+
+  var rail = document.getElementById("rail");
+  var elapsed = document.createElement("div");
+  var lineBg = document.createElement("div");
+  lineBg.className = "rail-line";
+  elapsed.className = "rail-elapsed";
+  rail.appendChild(lineBg);
+  rail.appendChild(elapsed);
+
+  var nowMark = document.createElement("div");
+  nowMark.className = "now-marker";
+  nowMark.innerHTML = '<span>Today</span>';
+  rail.appendChild(nowMark);
+
+  var nodeEls = ms.map(function(m, i){
+    var pct = ((m.ms - START) / SPAN) * 100;
+    var el = document.createElement("div");
+    el.className = "node";
+    // keep the outermost labels inside the rail's bounds
+    el.style.left = Math.min(96.5, Math.max(3.5, pct)) + "%";
+    // three label tiers, so tightly-clustered September dates never overprint
+    var tier = i % 3;
+    var labelTop = 48 + tier * 50;
+    el.innerHTML = '<div class="dot"></div>' +
+                   '<div class="stem" style="height:' + (labelTop - 40) + 'px"></div>' +
+                   '<div class="label" style="top:' + labelTop + 'px">' +
+                     '<div class="date mono">' + m.short + '</div>' +
+                     '<div class="name">' + m.name + '</div>' +
+                   '</div>';
+    rail.appendChild(el);
+    return el;
+  });
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+
+  var LONG = {month:"long", day:"numeric", year:"numeric", weekday:"long"};
+
+  function render(){
+    var now = Date.now();
+
+    // next upcoming milestone
+    var idx = -1;
+    for (var i = 0; i < ms.length; i++){
+      if (ms[i].ms > now){ idx = i; break; }
+    }
+
+    // countdown board
+    var dEl = document.getElementById("c-d"),
+        hEl = document.getElementById("c-h"),
+        mEl = document.getElementById("c-m"),
+        sEl = document.getElementById("c-s");
+
+    if (idx === -1){
+      document.getElementById("target-name").textContent = "Fall Quarter complete";
+      document.getElementById("target-when").textContent = "Sequence finished 12 Dec 2026";
+      dEl.textContent = "00"; hEl.textContent = "00"; mEl.textContent = "00"; sEl.textContent = "00";
+    } else {
+      var m = ms[idx];
+      var diff = Math.max(0, m.ms - now);
+      var secs = Math.floor(diff / 1000);
+      var days = Math.floor(secs / 86400);
+      var hrs  = Math.floor((secs % 86400) / 3600);
+      var mins = Math.floor((secs % 3600) / 60);
+      var sec  = secs % 60;
+
+      document.getElementById("target-name").textContent = m.name;
+      document.getElementById("target-when").textContent =
+        new Date(m.ms).toLocaleDateString("en-US", LONG);
+
+      dEl.textContent = pad(days);
+      hEl.textContent = pad(hrs);
+      mEl.textContent = pad(mins);
+      sEl.textContent = pad(sec);
+    }
+
+    // rail state
+    var clamped = Math.min(END, Math.max(START, now));
+    var nowPct = ((clamped - START) / SPAN) * 100;
+    elapsed.style.width = nowPct + "%";
+    nowMark.style.left = Math.min(97, Math.max(3, nowPct)) + "%";
+
+    for (var j = 0; j < nodeEls.length; j++){
+      var cls = "node";
+      if (ms[j].ms <= now) cls += " done";
+      else if (j === idx) cls += " next";
+      nodeEls[j].className = cls;
+    }
+  }
+
+  render();
+  setInterval(render, 1000);
+})();
+</script>
+
+</body>
+</html>

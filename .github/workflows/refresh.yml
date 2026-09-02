@@ -1,0 +1,47 @@
+name: Refresh dashboard
+
+on:
+  schedule:
+    # Every six hours. Cron here is UTC, but at this cadence the page is never
+    # more than a few hours stale regardless of daylight saving, so there is
+    # nothing to adjust twice a year.
+    - cron: "20 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/template.html"
+      - "build.mjs"
+      - ".github/workflows/refresh.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild page from live sources
+        run: node build.mjs
+
+      - name: Commit if the page changed
+        run: |
+          if git diff --quiet -- docs/index.html; then
+            echo "No change in the manifest or forecast. Nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          git commit -m "Refresh manifest and forecast ($(date -u +%Y-%m-%d\ %H:%MZ))"
+          git push
